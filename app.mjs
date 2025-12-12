@@ -40,13 +40,11 @@ app.use((error, _req, res, _next) => {
   if (error.code === 11000 && error.keyPattern) {
     const field = Object.keys(error.keyPattern)[0];
     const value = error.keyValue[field];
-    return res
-      .status(409)
-      .json({
-        message: `Une ressource avec ce ${field} existe déjà`,
-        field,
-        value,
-      });
+    return res.status(409).json({
+      message: `Une ressource avec ce ${field} existe déjà`,
+      field,
+      value,
+    });
   }
   if (error.name === "CastError" && error.path === "_id") {
     return res
@@ -80,4 +78,4 @@ mongooseConnect(
   });
 
 // **Ne pas mettre app.listen() sur Vercel**
-export default app;
+module.exports = app; //Permet d'exporter l'application pour être utilisée par Vercel

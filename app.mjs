@@ -19,7 +19,7 @@ dotenvFlow.config();
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 if (process.env.NODE_ENV !== "production") {
@@ -40,13 +40,11 @@ app.use((error, _req, res, _next) => {
   if (error.code === 11000 && error.keyPattern) {
     const field = Object.keys(error.keyPattern)[0];
     const value = error.keyValue[field];
-    return res
-      .status(409)
-      .json({
-        message: `Une ressource avec ce ${field} existe déjà`,
-        field,
-        value,
-      });
+    return res.status(409).json({
+      message: `Une ressource avec ce ${field} existe déjà`,
+      field,
+      value,
+    });
   }
   if (error.name === "CastError" && error.path === "_id") {
     return res
